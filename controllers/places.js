@@ -1,0 +1,59 @@
+const Place = require('../models/place');
+
+exports.create = (req, res, next) => {
+    const newPlace = new Place(req.body);
+    newPlace.save()
+        .then(place => res.status(201).json(place.view()))
+        .catch(err => {
+            if (err.name === 'MongoError' && err.code === 11000) {
+                return res.status(400).json({ message: 'Place already exists with name: ' + newPlace.name});
+            }
+            next(err);
+        });
+};
+
+exports.findAll = (req, res, next) => {
+    let limit = parseInt(req.query.count) || 50;
+    let page = parseInt(req.query.page) || 1;
+    let skip = (page - 1) * limit;
+    const conditions = {};
+    if (req.query.name) conditions.name = new RegExp('^' + req.query.name, 'i');
+    if (req.query.category) conditions.category = new RegExp('^' + req.query.category + '$', 'i');
+    Place.find(conditions)
+        .limit(limit)
+        .skip(skip)
+        .sort(req.query.sort)
+        .then(places => res.json(places.map(place => place.view())))
+        .catch(next);
+};
+
+exports.findOne = (req, res, next) => {
+    Place.findById(req.params.id)
+        .then(place => {
+            if (!place) {
+                return res.status(404).json({ message: 'Place not found' });
+            }
+            res.json(place.view());
+        })
+        .catch(next);
+};
+
+exports.update = (req, res, next) => {
+    const newPlace = req.body;
+    Place.findById(req.params.id)
+        .then(place => {
+            if (!place) {
+                return res.status(404).json({ message: 'Place not found' });
+            }
+            Object.assign(place, newPlace).save()
+                .then(place => res.json(place.view()))
+                .catch(next);
+        })
+        .catch(next);
+};
+
+exports.delete = (req, res, next) => {
+    Place.findByIdAndDelete(req.params.id)
+        .then(res.status(204).end())
+        .catch(next);
+};
