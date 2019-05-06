@@ -17,9 +17,7 @@ const schema = new mongoose.Schema({
         lowercase: true
     },
     password: {
-        type: String,
-        //required: [true, 'Password is required'],
-        //minlength: 6
+        type: String
     },
     name: {
         type: String,
@@ -74,7 +72,7 @@ schema.methods = {
 
     validatePassword(password, done) {
         bcrypt.compare(password, this.password, (err, isValid) => {
-            return done(error, isValid);
+            return done(err, isValid);
         });
     },
 
