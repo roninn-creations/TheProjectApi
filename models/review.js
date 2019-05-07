@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'user',
@@ -30,31 +30,38 @@ const schema = new mongoose.Schema({
     }
 }, {
     timestamps: true,
-    toJSON: {
-        virtuals: true,
-        transform: (obj, ret) => { delete ret._id }
-    },
     collation: {
         locale: "en"
     }
 });
 
-schema.pre('validate', done => {
-    delete this.createdAt;
-    delete this.updatedAt;
-    done();
-});
-
-schema.methods = {
-    view() {
+reviewSchema.methods = {
+    getView() {
         return {
             id: this.id,
-            user: this.user.view(),
+            user: this.user.getView(),
             place: this.place,
             rating: this.rating,
-            comment: this.comment
+            comment: this.comment,
+            createdAt: this.createdAt
         }
     }
 };
 
-module.exports = mongoose.model('review', schema);
+reviewSchema.statics = {
+    create(review) {
+        delete review.id;
+        delete review.createdAt;
+        delete review.updatedAt;
+        return new mongoose.model('review', reviewSchema)(review);
+    },
+
+    normalize(review) {
+        delete review.id;
+        delete review.createdAt;
+        delete review.updatedAt;
+        return review;
+    }
+};
+
+module.exports = mongoose.model('review', reviewSchema);

@@ -1,9 +1,9 @@
 const Place = require('../models/place');
 
 exports.create = (req, res, next) => {
-    const newPlace = new Place(req.body);
+    const newPlace = Place.create(req.body);
     newPlace.save()
-        .then(place => res.status(201).json(place.view()))
+        .then(place => res.status(201).json(place.getView()))
         .catch(err => {
             if (err.name === 'MongoError' && err.code === 11000) {
                 return res.status(400).json({ message: 'Place already exists with name: ' + newPlace.name});
@@ -23,7 +23,7 @@ exports.findAll = (req, res, next) => {
         .limit(limit)
         .skip(skip)
         .sort(req.query.sort)
-        .then(places => res.json(places.map(place => place.view())))
+        .then(places => res.json(places.map(place => place.getView())))
         .catch(next);
 };
 
@@ -33,20 +33,20 @@ exports.findOne = (req, res, next) => {
             if (!place) {
                 return res.status(404).json({ message: 'Place not found' });
             }
-            res.json(place.view());
+            res.json(place.getView());
         })
         .catch(next);
 };
 
 exports.update = (req, res, next) => {
-    const newPlace = req.body;
+    const newPlace = Place.normalize(req.body);
     Place.findById(req.params.id)
         .then(place => {
             if (!place) {
                 return res.status(404).json({ message: 'Place not found' });
             }
             Object.assign(place, newPlace).save()
-                .then(place => res.json(place.view()))
+                .then(place => res.json(place.getView()))
                 .catch(next);
         })
         .catch(next);

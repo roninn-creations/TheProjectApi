@@ -12,7 +12,7 @@ exports.register = (req, res, next) => {
     });
     const user = new User(User.fromRequest(req));
     user.save()
-        .then(user => res.status(201).json(user.authInfo()))
+        .then(user => res.status(201).json(user.getAuthInfo()))
         .catch(err => {
             if (err.name === 'MongoError' && err.code === 11000) {
                 return res.status(400).json({message: 'User already exists with email: ' + user.email});
@@ -24,7 +24,7 @@ exports.basic =  (req, res, next) => {
     passport.authenticate('basic', { session: false },(err, user) => {
         if (err) return next(err);
         if (!user) return res.status(400).json({message: 'Incorrect email or password'});
-        return res.json(user.authInfo());
+        return res.json(user.getAuthInfo());
     })(req,res,next);
 };
 
@@ -36,7 +36,7 @@ exports.googleCallback =  (req, res, next) => {
     if (req.query.state !== 'valid') return res.status(400).json({ message:'Invalid request' });
     passport.authenticate('google', { session: false }, (err, user, token) => {
         if (err) return next(err);
-        if (user) return res.json(user.authInfo());
+        if (user) return res.json(user.getAuthInfo());
         oauth.getGoogleProfile(token, (err, profile) => {
                 if (err) return next(err);
                 if (!profile) return res.status(500).json({ message: 'Failed to connect to Google' });
@@ -46,13 +46,13 @@ exports.googleCallback =  (req, res, next) => {
                         user.googleId = profile.googleId;
                         user.save((err, user) => {
                             if (err) return next(err);
-                            return res.json(user.authInfo());
+                            return res.json(user.getAuthInfo());
                         });
                     } else {
                         const newUser = new User(profile);
                         newUser.save((err, user) => {
                             if (err) return next(err);
-                            return res.status(201).json(user.authInfo());
+                            return res.status(201).json(user.getAuthInfo());
                         })
                     }
                 });
@@ -68,7 +68,7 @@ exports.facebookCallback =  (req, res, next) => {
     if (req.query.state !== 'valid') return res.status(400).json({ message:'Invalid request' });
     passport.authenticate('facebook', { session: false }, (err, user, token) => {
         if (err) return next(err);
-        if (user) return res.json(user.authInfo());
+        if (user) return res.json(user.getAuthInfo());
         oauth.getFacebookProfile(token, (err, profile) => {
             if (err) return next(err);
             if (!profile) return res.status(500).json({ message: 'Failed to connect to Facebook' });
@@ -78,13 +78,13 @@ exports.facebookCallback =  (req, res, next) => {
                     user.facebookId = profile.facebookId;
                     user.save((err, user) => {
                         if (err) return next(err);
-                        return res.json(user.authInfo());
+                        return res.json(user.getAuthInfo());
                     });
                 } else {
                     const newUser = new User(profile);
                     newUser.save((err, user) => {
                         if (err) return next(err);
-                        return res.status(201).json(user.authInfo());
+                        return res.status(201).json(user.getAuthInfo());
                     })
                 }
             });
@@ -93,7 +93,7 @@ exports.facebookCallback =  (req, res, next) => {
 };
 
 exports.getUser = (req, res, next) => {
-    return res.json(req.user.view());
+    return res.json(req.user.getView());
 };
 
 exports.profile = (req, res, next) => {

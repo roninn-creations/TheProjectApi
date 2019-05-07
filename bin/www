@@ -14,7 +14,7 @@ const config = require('../config');
  * Views setup
  */
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.set('getView engine', 'pug');
 
 /**
  * Get values from environment and store in Express.

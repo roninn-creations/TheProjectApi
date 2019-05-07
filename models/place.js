@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
+const placeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required'],
@@ -33,31 +33,36 @@ const schema = new mongoose.Schema({
     }
 }, {
     timestamps: true,
-    toJSON: {
-        virtuals: true,
-        transform: (obj, ret) => { delete ret._id }
-    },
     collation: {
         locale: "en"
     }
 });
 
-schema.pre('validate', done => {
-    this.createdAt = null;
-    this.updatedAt = null;
-    done();
-});
-
-schema.methods = {
-    view() {
+placeSchema.methods = {
+    getView() {
         return {
             id: this.id,
             name: this.name,
             address: this.address,
-            tags: this.tags,
-            createdAt: this.createdAt
+            tags: this.tags
         }
     },
 };
 
-module.exports = mongoose.model('place', schema);
+placeSchema.statics = {
+    create(place) {
+        delete place.id;
+        delete place.createdAt;
+        delete place.updatedAt;
+        return new mongoose.model('place', placeSchema)(place);
+    },
+
+    normalize(place) {
+        delete place.id;
+        delete place.createdAt;
+        delete place.updatedAt;
+        return place;
+    }
+};
+
+module.exports = mongoose.model('place', placeSchema);

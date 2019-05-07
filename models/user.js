@@ -7,7 +7,7 @@ const jwtExpr = require('../config').jwt.exprDays;
 const roles = ['user', 'admin'];
 const rolesEnum = {values: roles, message: 'Invalid role'};
 
-const schema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: {
         type: String,
         match: /^\S+@\S+\.\S+$/,
@@ -43,13 +43,7 @@ const schema = new mongoose.Schema({
     }
 });
 
-schema.pre('validate', done => {
-    delete this.createdAt;
-    delete this.updatedAt;
-    done();
-});
-
-schema.post('validate', (user, done) => {
+userSchema.post('validate', (user, done) => {
     if (this.password && (this.isModified('password') || this.isNew)) {
         bcrypt.hash(user.password, 10, (err, hash) => {
             if (err) return done({ message: 'Hashing failed'});
@@ -61,8 +55,8 @@ schema.post('validate', (user, done) => {
     }
 });
 
-schema.methods = {
-    view() {
+userSchema.methods = {
+    getView() {
         return {
             id: this.id,
             name: this.name,
@@ -87,12 +81,28 @@ schema.methods = {
         }, jwtSecret);
     },
 
-    authInfo() {
+    getAuthInfo() {
         return {
-            user: this.view(),
+            user: this.getView(),
             token: this.generateJWT()
         };
     }
 };
 
-module.exports = mongoose.model('user', schema);
+userSchema.statics = {
+    create(user) {
+        delete user.id;
+        delete user.createdAt;
+        delete user.updatedAt;
+        return new mongoose.model('user', userSchema)(user);
+    },
+
+    normalize(user) {
+        delete user.id;
+        delete user.createdAt;
+        delete user.updatedAt;
+        return user;
+    }
+};
+
+module.exports = mongoose.model('user', userSchema);

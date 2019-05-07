@@ -2,12 +2,12 @@ const Review = require('../models/review');
 const User = require('../models/user');
 
 exports.create = (req, res, next) => {
-    const newReview = new Review(req.body);
+    const newReview = Review.create(req.body);
     if (req.user.role !== 'admin') newReview.user = req.user.id;
     newReview.save()
         .then(review => {
             review.user = req.user;
-            res.status(201).json(review.view())
+            res.status(201).json(review.getView())
         })
         .catch(next);
 };
@@ -24,7 +24,7 @@ exports.findAll = (req, res, next) => {
         .skip(skip)
         .sort(req.query.sort)
         .populate('user')
-        .then(reviews => res.json(reviews.map(review => review.view())))
+        .then(reviews => res.json(reviews.map(review => review.getView())))
         .catch(next);
 };
 
@@ -35,13 +35,13 @@ exports.findOne = (req, res, next) => {
             if (!review) {
                 return res.status(404).json({ message: 'Review not found' });
             }
-            res.json(review.view());
+            res.json(review.getView());
         })
         .catch(next);
 };
 
 exports.update = (req, res, next) => {
-    const newReview = req.body;
+    const newReview = Review.normalize(req.body);
     if (req.user.role !== 'admin') {
         delete newReview.user;
         delete newReview.place;
@@ -60,7 +60,7 @@ exports.update = (req, res, next) => {
                     review.save()
                         .then(review => {
                             review.user = user;
-                            res.json(review.view())
+                            res.json(review.getView())
                         })
                         .catch(next);
                 })
