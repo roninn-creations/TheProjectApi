@@ -28,7 +28,7 @@ const placeSchema = new mongoose.Schema({
         type: [String],
         validate: {
             validator: (tags) => { return tags.length <= 5 },
-            message: 'Maximum 5 tags'
+            message: 'Too many tags: maximum 5'
         }
     }
 }, {

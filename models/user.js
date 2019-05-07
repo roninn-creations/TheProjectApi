@@ -43,10 +43,10 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.post('validate', (user, done) => {
+userSchema.post('validate', function(user, done) {
     if (this.password && (this.isModified('password') || this.isNew)) {
         bcrypt.hash(user.password, 10, (err, hash) => {
-            if (err) return done({ message: 'Hashing failed'});
+            if (err) return done({message: 'Hashing failed'});
             user.password = hash;
             return done(null, user);
         });

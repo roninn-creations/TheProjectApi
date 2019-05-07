@@ -25,7 +25,7 @@ const reviewSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        maxLength: 500,
+        maxlength: [500, 'Too long comment: maximum 500 characters'],
         trim: true
     }
 }, {

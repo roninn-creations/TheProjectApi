@@ -4,10 +4,17 @@ const User = require('../models/user');
 exports.create = (req, res, next) => {
     const newReview = Review.create(req.body);
     if (req.user.role !== 'admin') newReview.user = req.user.id;
-    newReview.save()
-        .then(review => {
-            review.user = req.user;
-            res.status(201).json(review.getView())
+    User.findById(newReview.user)
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ message: 'User not found!' });
+            }
+            newReview.save()
+                .then(review => {
+                    review.user = user;
+                    res.status(201).json(review.getView())
+                })
+                .catch(next);
         })
         .catch(next);
 };
@@ -57,6 +64,9 @@ exports.update = (req, res, next) => {
             Object.assign(review, newReview);
             User.findById(review.user)
                 .then(user => {
+                    if (!user) {
+                        return res.status(404).json({ message: 'User not found!' });
+                    }
                     review.save()
                         .then(review => {
                             review.user = user;
