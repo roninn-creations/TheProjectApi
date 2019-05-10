@@ -16,11 +16,11 @@ const reviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
         required: [true, 'Rating is required'],
-        min: [0, 'Invalid rating'],
-        max: [5, 'Invalid rating'],
+        min: [1, 'Invalid rating: 1-5'],
+        max: [5, 'Invalid rating: 1-5'],
         validate: {
             validator: Number.isInteger,
-            message: 'Invalid rating'
+            message: 'Invalid rating: 1-5'
         }
     },
     comment: {
