@@ -16,9 +16,13 @@ exports.findAll = (req, res, next) => {
     let limit = parseInt(req.query.count) || 50;
     let page = parseInt(req.query.page) || 1;
     let skip = (page - 1) * limit;
-    const conditions = {};
-    if (req.query.name) conditions.name = new RegExp('^' + req.query.name, 'i');
-    if (req.query.category) conditions.category = new RegExp('^' + req.query.category + '$', 'i');
+    let conditions = {};
+    if (req.query.q){
+        conditions = {$or:[
+            {name: new RegExp('^' + req.query.q, 'i')},
+            {tags: new RegExp('^' + req.query.q + '$', 'i')}
+        ]};
+    }
     Place.find(conditions)
         .limit(limit)
         .skip(skip)
