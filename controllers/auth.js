@@ -7,7 +7,7 @@ exports.register = (req, res, next) => {
     if (!req.body.password || !req.body.password.match(passwordRule)) return res.status(400).json({
         message: 'Invalid password: Minimum 8 character, 1 lowercase, 1 uppercase, 1 number'
     });
-    const user = new User(User.fromRequest(req));
+    const user = new User(User.normalize(req.body));
     user.save()
         .then(user => res.status(201).json(user.getAuthInfo()))
         .catch(err => {
