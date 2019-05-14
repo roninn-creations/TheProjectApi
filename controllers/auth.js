@@ -63,10 +63,6 @@ exports.google = (req, res, next) => {
     });
 };
 
-exports.googleCallback = (req, res, next) => {
-    return res.json({code: req.query.code});
-};
-
 exports.facebook = (req, res, next) => {
     const token = req.body.token;
     oauth.getFacebookProfile(token, (err, profile) => {
@@ -95,6 +91,10 @@ exports.facebook = (req, res, next) => {
             }
         });
     });
+};
+
+exports.googleCallback = (req, res, next) => {
+    return res.json({code: req.query.code});
 };
 
 exports.facebookCallback =  (req, res, next) => {

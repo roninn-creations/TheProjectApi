@@ -10,9 +10,9 @@ router.get('/basic', controller.basic);
 
 router.post('/google', controller.google);
 
-router.get('/google/callback', controller.googleCallback);
-
 router.post('/facebook', controller.facebook);
+
+router.get('/google/callback', controller.googleCallback);
 
 router.get('/facebook/callback', controller.facebookCallback);
 

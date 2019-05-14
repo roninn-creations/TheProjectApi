@@ -27,11 +27,11 @@ router.get('/', (req, res, next) => {
             ],
             auth: [
                 'POST   ~/auth                   : Register user with email and password',
-                'GET    ~/auth                   : Get current user info ',
-                'GET    ~/auth/basic             : Sign in with email and password',
-                'GET    ~/auth/google            : Sign in/up with Google',
+                'GET    ~/auth                   : Authenticate with JWT',
+                'GET    ~/auth/basic             : Authenticate with email and password',
+                'GET    ~/auth/google            : Authenticate/register with Google',
+                'GET    ~/auth/facebook          : Authenticate/register with Facebook',
                 'GET    ~/auth/google/callback   : Callback URL for Google login',
-                'GET    ~/auth/facebook          : Sign in/up with Facebook',
                 'GET    ~/auth/facebook/callback : Callback URL for Facebook login'
             ],
         }
