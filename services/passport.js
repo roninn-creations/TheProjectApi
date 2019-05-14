@@ -1,8 +1,5 @@
 const passport = require('passport');
 const BasicStrategy = require('passport-http').BasicStrategy;
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-const OauthStrategy = require('passport-http-bearer').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../models/user');
@@ -22,30 +19,6 @@ passport.use('basic', new BasicStrategy(
     }
 ));
 
-passport.use('google', new GoogleStrategy({
-        clientID: config.google.appId,
-        clientSecret: config.google.appSecret,
-        callbackURL: config.google.callbackURL
-    },
-    function(accessToken, refreshToken, profile, done) {
-        User.findOne({ 'googleId': profile.id }, (err, user) => {
-            return done (err, user, accessToken);
-        });
-    }
-));
-
-passport.use('facebook', new FacebookStrategy({
-        clientID: config.facebook.appId,
-        clientSecret: config.facebook.appSecret,
-        callbackURL: config.facebook.callbackURL
-    },
-    function(accessToken, refreshToken, profile, done) {
-        User.findOne({ 'facebookId': profile.id }, (err, user) => {
-            return done (err, user, accessToken);
-        });
-    }
-));
-
 passport.use('jwt', new JwtStrategy({
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: config.jwt.secret
@@ -56,15 +29,5 @@ passport.use('jwt', new JwtStrategy({
         });
     }
 ));
-
-// passport.use('oauth', new BearerStrategy(
-//     function(token, done) {
-//         User.findOne({ token: token }, function (err, user) {
-//             if (err) { return done(err); }
-//             if (!user) { return done(null, false); }
-//             return done(null, user, { scope: 'read' });
-//         });
-//     }
-// ));
 
 

@@ -1,7 +1,21 @@
 const https = require('../services/https');
 const config = require('../config');
+const {google} = require('googleapis');
+
+const googleClient = new google.auth.OAuth2(
+    config.google.appId,
+    config.google.appSecret,
+    config.google.callbackURL
+);
 
 const pictureSize = 50;
+
+exports.getGoogleAccessToken = (code, done) => {
+    googleClient.getToken(code, (err, tokens) => {
+        if (err) return done(err);
+        return done(null, tokens.access_token);
+    });
+};
 
 exports.getGoogleProfile = (token, done) => {
     const headers = {
