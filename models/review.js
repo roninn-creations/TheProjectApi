@@ -37,9 +37,14 @@ const reviewSchema = new mongoose.Schema({
 
 reviewSchema.methods = {
     getView() {
+        const user = this.user ? this.user.getView() : {
+            id: null,
+            name: 'Deleted user',
+            picture: null
+        };
         return {
             id: this.id,
-            user: this.user.getView(),
+            user: user,
             place: this.place,
             rating: this.rating,
             comment: this.comment,
