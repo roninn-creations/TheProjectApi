@@ -17,8 +17,8 @@ exports.register = (req, res, next) => {
         });
 };
 
-exports.getUser = (req, res, next) => {
-    return res.json(req.user.getView());
+exports.jwt = (req, res, next) => {
+    return res.json(req.user.getAuthInfo());
 };
 
 exports.basic = (req, res, next) => {

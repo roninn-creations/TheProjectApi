@@ -4,7 +4,7 @@ const auth = require('../services/auth');
 
 router.post('/', controller.register);
 
-router.get('/', auth.any, controller.getUser);
+router.get('/', auth.any, controller.jwt);
 
 router.get('/basic', controller.basic);
 
