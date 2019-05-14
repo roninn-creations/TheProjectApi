@@ -8,11 +8,11 @@ router.get('/', auth.any, controller.getUser);
 
 router.get('/basic', controller.basic);
 
-router.get('/google', controller.google);
+router.post('/google', controller.google);
 
 router.get('/google/callback', controller.googleCallback);
 
-router.get('/facebook', controller.facebook);
+router.post('/facebook', controller.facebook);
 
 router.get('/facebook/callback', controller.facebookCallback);
 
