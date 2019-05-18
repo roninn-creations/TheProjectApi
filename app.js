@@ -1,8 +1,6 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-const passport = require('passport');
-require('./services/passport');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');

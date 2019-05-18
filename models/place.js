@@ -50,18 +50,16 @@ placeSchema.methods = {
 };
 
 placeSchema.statics = {
-    create(place) {
-        delete place.id;
-        delete place.createdAt;
-        delete place.updatedAt;
-        return new mongoose.model('place', placeSchema)(place);
+    normalize(place) {
+        return {
+            name: place.name,
+            address: place.address,
+            tags: place.tags
+        };
     },
 
-    normalize(place) {
-        delete place.id;
-        delete place.createdAt;
-        delete place.updatedAt;
-        return place;
+    create(place) {
+        return new mongoose.model('place', placeSchema)(this.normalize(place));
     }
 };
 

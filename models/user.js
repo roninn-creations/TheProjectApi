@@ -90,19 +90,21 @@ userSchema.methods = {
 };
 
 userSchema.statics = {
-    create(user) {
-        delete user.id;
-        delete user.createdAt;
-        delete user.updatedAt;
-        return new mongoose.model('user', userSchema)(user);
+    normalize(user) {
+        return {
+            email: user.email,
+            password: user.password,
+            name: user.name,
+            googleId: user.googleId,
+            facebookId: user.facebookId,
+            role: user.role,
+            picture: user.picture,
+        };
     },
 
-    normalize(user) {
-        delete user.id;
-        delete user.createdAt;
-        delete user.updatedAt;
-        return user;
-    }
+    create(user) {
+        return new mongoose.model('user', userSchema)(this.normalize(user));
+    },
 };
 
 module.exports = mongoose.model('user', userSchema);

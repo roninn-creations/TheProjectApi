@@ -55,17 +55,16 @@ reviewSchema.methods = {
 
 reviewSchema.statics = {
     create(review) {
-        delete review.id;
-        delete review.createdAt;
-        delete review.updatedAt;
-        return new mongoose.model('review', reviewSchema)(review);
+        return new mongoose.model('review', reviewSchema)(this.normalize(review));
     },
 
     normalize(review) {
-        delete review.id;
-        delete review.createdAt;
-        delete review.updatedAt;
-        return review;
+        return {
+            user: review.user,
+            place: review.place,
+            rating: review.rating,
+            comment: review.comment
+        };
     }
 };
 
