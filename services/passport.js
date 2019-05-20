@@ -3,7 +3,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../models/user');
-const config = require('../config');
+const jwtSecret = require('../config').jwt.secret;
 
 passport.use('basic', new BasicStrategy(
     function(email, password, done) {
@@ -21,7 +21,7 @@ passport.use('basic', new BasicStrategy(
 
 passport.use('jwt', new JwtStrategy({
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: config.jwt.secret
+        secretOrKey: jwtSecret
     },
     function(jwtPayload, done) {
         User.findById(jwtPayload.id, (err, user) => {

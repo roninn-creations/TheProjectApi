@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+require('passport');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const placesRouter = require('./routes/places');
 const reviewsRouter = require('./routes/reviews');
 const authRouter = require('./routes/auth');
+require('./services/passport');
 
 const app = express();
 
