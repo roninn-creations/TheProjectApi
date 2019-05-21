@@ -82,6 +82,9 @@ exports.update = (req, res, next) => {
 exports.delete = (req, res, next) => {
     Review.findById(req.params.id)
         .then(review => {
+            if (!review) {
+                return res.status(404).json({ message: 'Review not found' });
+            }
             if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
                 return res.status(403).json({ message: 'Review cannot be deleted' });
             }

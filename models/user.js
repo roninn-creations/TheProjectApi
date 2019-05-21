@@ -91,15 +91,15 @@ userSchema.methods = {
 
 userSchema.statics = {
     normalize(user) {
-        return {
-            email: user.email,
-            password: user.password,
-            name: user.name,
-            googleId: user.googleId,
-            facebookId: user.facebookId,
-            role: user.role,
-            picture: user.picture,
-        };
+        const normalized = {};
+        if (user.email !== undefined) normalized.email = user.email;
+        if (user.password !== undefined) normalized.password = user.password;
+        if (user.name !== undefined) normalized.name = user.name;
+        if (user.googleId !== undefined) normalized.googleId = user.googleId;
+        if (user.facebookId !== undefined) normalized.facebookId = user.facebookId;
+        if (user.role !== undefined) normalized.role = user.role;
+        if (user.picture !== undefined) normalized.picture = user.picture;
+        return normalized;
     },
 
     create(user) {

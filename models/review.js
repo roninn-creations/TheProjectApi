@@ -54,17 +54,17 @@ reviewSchema.methods = {
 };
 
 reviewSchema.statics = {
-    create(review) {
-        return new mongoose.model('review', reviewSchema)(this.normalize(review));
+    normalize(review) {
+        const normalized = {};
+        if (review.user !== undefined) normalized.user = review.user;
+        if (review.place !== undefined) normalized.place = review.place;
+        if (review.rating !== undefined) normalized.rating = review.rating;
+        if (review.comment !== undefined) normalized.comment = review.comment;
+        return normalized;
     },
 
-    normalize(review) {
-        return {
-            user: review.user,
-            place: review.place,
-            rating: review.rating,
-            comment: review.comment
-        };
+    create(review) {
+        return new mongoose.model('review', reviewSchema)(this.normalize(review));
     }
 };
 

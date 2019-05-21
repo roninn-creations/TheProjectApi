@@ -10,7 +10,7 @@ exports.create = (req, res, next) => {
         .then(user => res.status(201).json(user.getView()))
         .catch(err => {
             if (err.name === 'MongoError' && err.code === 11000) {
-                return res.status(400).json({message: 'User already exists with email: ' + newUser.email});
+                return res.status(400).json({ message: 'User already exists with email: ' + newUser.email });
             }
             next(err);
         });
@@ -34,7 +34,7 @@ exports.findOne = (req, res, next) => {
     User.findById(req.params.id)
         .then(user => {
             if (!user) {
-                return res.status(404).json({message: 'User not found'});
+                return res.status(404).json({ message: 'User not found' });
             }
             res.json(user.getView());
         })
@@ -46,7 +46,7 @@ exports.update = (req, res, next) => {
     User.findById(req.params.id)
         .then(user => {
             if (!user) {
-                return res.status(404).json({message: 'User not found'});
+                return res.status(404).json({ message: 'User not found' });
             }
             Object.assign(user, newUser).save()
                 .then(user => res.json(user.getView()))
@@ -57,6 +57,13 @@ exports.update = (req, res, next) => {
 
 exports.delete = (req, res, next) => {
     User.findByIdAndDelete(req.params.id)
-        .then(res.status(204).end())
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            user.delete()
+                .then(res.status(204).end())
+                .catch(next);
+        })
         .catch(next);
 };

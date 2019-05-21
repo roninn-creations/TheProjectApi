@@ -57,7 +57,14 @@ exports.update = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-    Place.findByIdAndDelete(req.params.id)
-        .then(res.status(204).end())
+    Place.findById(req.params.id)
+        .then( place => {
+            if (!place) {
+                return res.status(404).json({ message: 'Place not found' });
+            }
+            place.delete()
+                .then(res.status(204).end())
+                .catch(next);
+        })
         .catch(next);
 };

@@ -66,7 +66,7 @@ exports.google = (req, res, next) => {
 exports.facebook = (req, res, next) => {
     const token = req.body.token;
     oauth.getFacebookProfile(token, (err, profile) => {
-        if (err || !profile || !profile.facebookId) return res.status(400).json({message: 'Incorrect Facebook code'});
+        if (err || !profile || !profile.facebookId) return res.status(400).json({message: 'Incorrect Facebook token'});
         User.findOne({ 'facebookId': profile.facebookId }, (err, user) => {
             if (err) return next(err);
             if (user) {
@@ -94,9 +94,9 @@ exports.facebook = (req, res, next) => {
 };
 
 exports.googleCallback = (req, res, next) => {
-    return res.json({code: req.query.code});
+    return res.json(req.query);
 };
 
 exports.facebookCallback =  (req, res, next) => {
-    return res.json({code: req.query.code});
+    return res.json(req.query);
 };

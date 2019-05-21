@@ -2,9 +2,9 @@ const router = require('express').Router();
 const controller = require('../controllers/auth');
 const auth = require('../services/auth');
 
-router.post('/', controller.register);
-
 router.get('/', auth.any, controller.jwt);
+
+router.post('/register', controller.register);
 
 router.get('/basic', controller.basic);
 

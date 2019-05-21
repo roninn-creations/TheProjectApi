@@ -51,11 +51,11 @@ placeSchema.methods = {
 
 placeSchema.statics = {
     normalize(place) {
-        return {
-            name: place.name,
-            address: place.address,
-            tags: place.tags
-        };
+        const normalized = {};
+        if (place.name !== undefined) normalized.name = place.name;
+        if (place.address !== undefined) normalized.address = place.address;
+        if (place.tags !== undefined) normalized.tags = place.tags;
+        return normalized;
     },
 
     create(place) {

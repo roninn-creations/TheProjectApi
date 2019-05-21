@@ -3,7 +3,7 @@ const router = require('express').Router();
 router.get('/', (req, res, next) => {
     const help = {
         message: 'Welcome to the-project-api',
-        routes: {
+        endpoints: {
             places: [
                 'POST   ~/places      : Create new place',
                 'GET    ~/places      : Read all the places',
@@ -26,11 +26,11 @@ router.get('/', (req, res, next) => {
                 'DELETE ~/reviews/{id} : Delete the review with given ID'
             ],
             auth: [
-                'POST   ~/auth                   : Register user with email and password',
+                'POST   ~/auth/register          : Register user with email and password',
+                'POST   ~/auth/google            : Authenticate/register with Google',
+                'POST   ~/auth/facebook          : Authenticate/register with Facebook',
                 'GET    ~/auth                   : Authenticate with JWT',
                 'GET    ~/auth/basic             : Authenticate with email and password',
-                'GET    ~/auth/google            : Authenticate/register with Google',
-                'GET    ~/auth/facebook          : Authenticate/register with Facebook',
                 'GET    ~/auth/google/callback   : Callback URL for Google login',
                 'GET    ~/auth/facebook/callback : Callback URL for Facebook login'
             ],

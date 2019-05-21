@@ -25,7 +25,7 @@ exports.getGoogleProfile = (token, done) => {
     const path = config.google.profilePath;
     https.getJson(hostname, path, headers, (err, status, body) => {
         if (err) return done(err);
-        if (status !== 200) done();
+        if (status !== 200) return done();
         return done(null, {
             googleId: body.id,
             email: body.email,
@@ -43,7 +43,7 @@ exports.getFacebookProfile = (token, done) => {
     const path = config.facebook.profilePath;
     https.getJson(hostname, path, headers, (err, status, body) => {
         if (err) return done(err);
-        if (status !== 200) done(null);
+        if (status !== 200) return done(null);
         return done(null, {
             facebookId: body.id,
             email: body.email,
